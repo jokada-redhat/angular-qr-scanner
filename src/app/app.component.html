@@ -9,13 +9,23 @@
       [enable]="scannerEnabled"
       (scanSuccess)="onScanSuccess($event)"
       [autofocusEnabled]="true"
-      class="scanner">
+      class="scanner"
+      (scanError)="onScanError($event)"
+      (scanFailure)="onScanFailure($event)"
+      (scanComplete)="onScanComplete($event)"
+      >
     </zxing-scanner>
   </div>
 
   <div *ngIf="qrResultString" class="result">
     <h3>スキャン結果:</h3>
     <p>{{ qrResultString }}</p>
+    <h3>スキャン結果:</h3>
+    <ul>
+      <li *ngFor="let value of qrResultStrings">
+        {{ value }}
+      </li>
+    </ul>
     <button (click)="restartScanner()">再スキャン</button>
   </div>
 

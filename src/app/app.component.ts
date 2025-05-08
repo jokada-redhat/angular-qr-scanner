@@ -5,10 +5,11 @@ import { ApiService } from './api.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: false,
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   qrResultString: string = '';
+  qrResultStrings: string[] = [];
   scannerEnabled: boolean = true;
   cameraCount: number = 0; // カメラデバイスの数を保持するプロパティ
   apiResponse: any = null;
@@ -27,7 +28,9 @@ export class AppComponent implements OnInit {
       // 利用可能なメディアデバイスを取得
       const devices = await navigator.mediaDevices.enumerateDevices();
       // ビデオ入力デバイス（カメラ）のみをフィルタリング
-      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      const videoDevices = devices.filter(
+        (device) => device.kind === 'videoinput'
+      );
       this.cameraCount = videoDevices.length; // カメラの数をセット
       console.log('利用可能なカメラデバイス:', videoDevices);
     } catch (error) {
@@ -37,14 +40,33 @@ export class AppComponent implements OnInit {
   }
 
   onScanSuccess(result: string) {
+    console.log('onScanSuccess');
     this.qrResultString = result;
-    this.scannerEnabled = false; // スキャン後にカメラをオフにする
-    this.fetchData("http://localhost:4200/api/example");
+    this.qrResultStrings.push(result);
+    // this.scannerEnabled = false; // スキャン後にカメラをオフにする
+  }
+
+  onScanError(result: string) {
+    this.qrResultStrings.push('onScanError');
+  }
+
+  onScanFailure(result: string) {
+    this.qrResultStrings.push('onScanFailure');
+  }
+
+  onScanComplete(result: string) {
+    this.qrResultStrings.push('onScanComplete');
+  }
+
+  onCamerasFoundHandler(results: any) {
+    console.log('========');
+    console.log(results);
   }
 
   restartScanner() {
     this.scannerEnabled = true;
     this.qrResultString = '';
+    this.qrResultStrings = [];
     this.getCameraCount(); // 再スキャン時にカメラ数を再確認（必要に応じて）
   }
 
@@ -59,7 +81,7 @@ export class AppComponent implements OnInit {
       error: (error) => {
         this.error = 'データの取得に失敗しました: ' + error.message;
         this.loading = false;
-      }
+      },
     });
   }
 }
