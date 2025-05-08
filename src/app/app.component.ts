@@ -46,15 +46,15 @@ export class AppComponent implements OnInit {
     // this.scannerEnabled = false; // スキャン後にカメラをオフにする
   }
 
-  onScanError(result: string) {
+  onScanError(result: any) {
     this.qrResultStrings.push('onScanError');
   }
 
-  onScanFailure(result: string) {
+  onScanFailure() {
     this.qrResultStrings.push('onScanFailure');
   }
 
-  onScanComplete(result: string) {
+  onScanComplete(result: any) {
     this.qrResultStrings.push('onScanComplete');
   }
 
